@@ -1,0 +1,25 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/body-parser": "^1.19.5",
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.0",
+    "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.5.0",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "node-2fa": "^2.0.3"
+  }
+}
