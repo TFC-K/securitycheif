@@ -4,10 +4,6 @@ import User from '../interfaces/user';
 
 const router = express();
 
-router.get('/', (req, res) => {
-    res.json({hello: 'world'});
-});
-
 router.post('/auth/login', (req, res) : any => {
     const email = req.body.email,
     password = req.body.password;
