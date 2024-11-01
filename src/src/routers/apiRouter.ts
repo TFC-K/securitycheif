@@ -18,13 +18,13 @@ router.post('/auth/login', (req, res) : any => {
         return res.status(401).json({ error: 'account bestaat niet, of wachtwoord is ongeldig' });
     
     if(user.has2fa && !twoFactorCode)
-        return res.status(400).json({ error: '2fa' });
+        return res.status(403).json({ error: '2fa verificatie nodig' });
     else if(user.has2fa && !user.verifyTwoFactorCode(twoFactorCode!))
         return res.status(400).json({ error: 'ongeldige 2fa code' });
 
     const sessionToken = user.rollSessionToken();
 
-    res.cookie('session', sessionToken).json({ token: sessionToken });
+    res.status(204).cookie('session', sessionToken).end();
 });
 
 router.post('/auth/register', (req, res) : any => {

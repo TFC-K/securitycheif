@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='index.css'>
+</head>
+
+<body>
+    <header>
+        <a href="/">
+            <img src="logo_gemeente_heerlen.svg" height="48px">
+        </a>
+    </header>
+    <main>
+        <div style="max-width: 512px;padding: 1.5rem;">
+            <h1>Inloggen</h1>
+            <form action="#" style="display: flex;flex-direction: column;gap: 2rem;">
+                <p id="error-info" style="color: red;display: none;">error text</p>
+                
+                <input class="field" id="field-email" type="email" placeholder="Email" value="lo3l@lol.com">
+                <input class="field" id="field-password" type="password" placeholder="Wachtwoord" value="test">
+                <input class="field" style="display: none;" id="field-totp" type="text" placeholder="2fa verificatie code">
+                <input class="button" type="submit" value="Log in">
+            </form>
+
+            <p style="margin-top: 5rem;">Nog geen account voor uw bedrijf?<br><a style="text-decoration: none;color: #0b7c7b;font-weight: 600;" href="/register">Maak een nieuw account aan.</a></p>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+
+    
+    <script>
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.defaultPrevented = true;
+            const password = document.querySelector('[id="field-password"]').value;
+            const email = document.querySelector('[id="field-email"]').value;
+            const totpField = document.querySelector('[id="field-totp"]');
+            const totp = totpField.style.display === 'block' ? totpField.value : undefined;
+            
+            const req = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({ email,password, totp })
+            });
+
+            if(req.ok) {
+                location.href = '/dashboard';
+                return;
+            }
+
+            totpField.style.display = req.status === 403 ? 'block' : 'none';
+            if(req.status === 403)
+                return;
+
+
+            const body = await req.json();
+            document.querySelector('[id="error-info"]').textContent = body.error;
+            document.querySelector('[id="error-info"]').style.display = 'block';
+        });
+    </script>
+
+</body>
+
+</html>
+<style>
+    .field {
+        background-color: whitesmoke;
+        border-radius: 5px;
+        padding: 1rem 1rem;
+        font-size: 18px;
+        border: none;
+    }
+
+    .button {
+        background-color: #0b7c7b;
+        border: none;
+        border-radius: 5px;
+        padding: .5rem 1rem;
+        font-size: 24px;
+        cursor: pointer;
+        transition: filter .1s ease-in-out;
+        margin-top: 2.5rem;
+    }
+
+    .button:hover {
+        filter: brightness(1.15);
+    }
+</style>
