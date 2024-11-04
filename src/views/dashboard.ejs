@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body>
+    <span style="word-wrap: break-word;"><%- JSON.stringify(user, null, 4); %></span>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        const user = <%- JSON.stringify({email: user._email, flags: user._flags, websites: user._websites}); %>;
+
+        (() => {
+            Toastify({ text: `Welkom terug, ${user.email}`, duration: 3000 }).showToast();
+        })();
+    </script>
+</body>
+</html>

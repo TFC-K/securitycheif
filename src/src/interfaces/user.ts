@@ -47,7 +47,7 @@ export default class User {
     }
 
     public rollSessionToken() : string {
-        this._sessionToken = crypto.randomBytes(32).toString('hex');
+        this._sessionToken = crypto.randomBytes(32 * 8).toString('hex');
         database.db.prepare('UPDATE users SET session_token=? WHERE id=?').run(this._sessionToken, this.userId);
         return this._sessionToken;
     }

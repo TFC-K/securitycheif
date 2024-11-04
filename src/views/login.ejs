@@ -55,12 +55,11 @@
                 return;
             }
 
-            totpField.style.display = req.status === 403 ? 'block' : 'none';
+            const body = await req.json();
+            totpField.style.display = (req.status === 403 || body.error === 'ongeldige 2fa code') ? 'block' : 'none';
             if(req.status === 403)
                 return;
 
-
-            const body = await req.json();
             document.querySelector('[id="error-info"]').textContent = body.error;
             document.querySelector('[id="error-info"]').style.display = 'block';
         });
