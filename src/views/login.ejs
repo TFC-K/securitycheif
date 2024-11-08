@@ -5,7 +5,7 @@
 <head>
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
+    <title>Gemeente Heerlen</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='index.css'>
 </head>
@@ -19,10 +19,10 @@
     <main>
         <div style="max-width: 512px;padding: 1.5rem;">
             <h1>Inloggen</h1>
-            <form action="#" style="display: flex;flex-direction: column;gap: 2rem;">
+            <form onsubmit="e => console.log(e)" action="#" style="display: flex;flex-direction: column;gap: 2rem;">
                 <p id="error-info" style="color: red;display: none;">error text</p>
                 
-                <input class="field" id="field-email" type="email" placeholder="Email" value="lo3l@lol.com">
+                <input class="field" id="field-email" type="email" placeholder="Email" value="test@email.com">
                 <input class="field" id="field-password" type="password" placeholder="Wachtwoord" value="test">
                 <input class="field" style="display: none;" id="field-totp" type="text" placeholder="2fa verificatie code">
                 <input class="button" type="submit" value="Log in">
@@ -36,7 +36,8 @@
     
     <script>
         document.querySelector('form').addEventListener('submit', async (e) => {
-            e.defaultPrevented = true;
+            e.preventDefault();
+
             const password = document.querySelector('[id="field-password"]').value;
             const email = document.querySelector('[id="field-email"]').value;
             const totpField = document.querySelector('[id="field-totp"]');
@@ -73,7 +74,7 @@
         background-color: whitesmoke;
         border-radius: 5px;
         padding: 1rem 1rem;
-        font-size: 18px;
+        font-size: 16px;
         border: none;
     }
 
@@ -82,7 +83,7 @@
         border: none;
         border-radius: 5px;
         padding: .5rem 1rem;
-        font-size: 24px;
+        font-size: 22px;
         cursor: pointer;
         transition: filter .1s ease-in-out;
         margin-top: 2.5rem;

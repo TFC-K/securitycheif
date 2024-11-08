@@ -1,0 +1,29 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    color: black;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #0b7c7b;
+}
+
+.button {
+    background-color: #0b7c7b;
+    border: none;
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    font-size: 18px;
+    cursor: pointer;
+    transition: filter .1s ease-in-out;
+    text-decoration: none;
+    color: white;
+}
+
+.button:hover {
+    filter: brightness(1.15);
+}
