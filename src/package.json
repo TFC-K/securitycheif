@@ -15,6 +15,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/ejs": "^3.1.5",
     "@types/express": "^5.0.0",
+    "@types/markdown-it": "^14.1.2",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^11.5.0",
     "body-parser": "^1.20.3",
@@ -22,6 +23,7 @@
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.21.1",
+    "markdown-it": "^14.1.0",
     "node-2fa": "^2.0.3"
   }
 }

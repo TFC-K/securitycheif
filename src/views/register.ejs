@@ -33,12 +33,34 @@
     <%- include('footer.ejs') %>
 
     <script>
-        document.querySelector('form').addEventListener('submit', (e) => {
+        document.querySelector('form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.querySelector('[id="field-password"]').value;
             const email = document.querySelector('[id="field-email"]').value;
-            const company = document.querySelector('[id="field-company"]').value;
-            console.log({ email, password, company });
+            let company = document.querySelector('[id="field-company"]').value;
+            if(!company.startsWith('http'))
+                company = 'http://' + company;
+
+            const req = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({ email, password, company })
+            });
+
+            if(req.ok) {
+                location.href = '/dashboard';
+                return;
+            }
+
+            const body = await req.json();
+            totpField.style.display = (req.status === 403 || body.error === 'ongeldige 2fa code') ? 'block' : 'none';
+            if(req.status === 403)
+                return;
+
+            document.querySelector('[id="error-info"]').textContent = body.error;
+            document.querySelector('[id="error-info"]').style.display = 'block';
         });
     </script>
 </body>

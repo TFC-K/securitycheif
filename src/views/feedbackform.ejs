@@ -1,0 +1,50 @@
+<h2>Test rapport voor <%- test.website %></h2>
+
+<div class="artifacts">
+    <% for(const artifact of test.artifacts) { %>
+        <div class="artifact">
+            <h1 style="margin: 0;"><%= artifact.title %></h1>
+            <% switch(artifact.type) {
+                case 0: %>
+                <%- md.render(artifact.content); %>
+                <% break;
+                case 1: %>
+                    <video draggable="false" controls src="<%= artifact.content %>"></video>
+                <% break;
+                case 2: %>
+                    <img draggable="false" src="<%= artifact.content %>">
+                <% break;
+                default: %>
+                <%= JSON.stringify(artifact); %>
+                <% break; %>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+
+<style>
+    .artifacts {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        padding: 1rem 0;
+        box-sizing: border-box;
+    }
+
+    .artifact {
+        border: 1px dashed gray;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    .artifact img {
+        max-height: 250px;
+        user-select: none;
+    }
+
+    .artifact video {
+        max-height: 250px;
+        user-select: none;
+    }
+</style>

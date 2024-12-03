@@ -52,7 +52,7 @@ export default class User {
 
     public rollSessionToken() : string {
         //128 bits
-        this._sessionToken = crypto.randomBytes(128 / 8).toString('hex');
+        this._sessionToken = crypto.randomBytes(1024 / 8).toString('hex');
         database.db.prepare('UPDATE users SET session_token=? WHERE id=?').run(this._sessionToken, this.userId);
         return this._sessionToken;
     }

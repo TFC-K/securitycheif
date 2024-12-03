@@ -1,0 +1,38 @@
+<h2>Test rapportages voor <%= website %></h2>
+
+<div class="test-list">
+    <% 
+    let n = 0;
+    for(const test of tests) { %>
+        <div class="test-item">
+            <div style="display: flex;gap: 1rem;align-items: center;justify-content: center;">
+                <h2>test <%= n++ + 1 %></h2>
+                <!-- <div style="background-color: red;padding: 5px 10px;border-radius: 7.5px;font-weight: 700;">STATUS</div> -->
+            </div>
+            <div style="display: flex;gap:1rem">
+                <a onclick="previewReport('<%= test %>')" class="button">bekijk rapport</a>
+                <a href="/dashboard/admin/edit/<%= test %>" class="button">bewerk rapport</a>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+
+<style>
+    .test-list {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        padding: 1rem 0;
+        box-sizing: border-box;
+    }
+
+    .test-item {
+        border-bottom: 1px solid gray;
+        padding: 0px 1rem;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+</style> 

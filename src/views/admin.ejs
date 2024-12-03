@@ -1,0 +1,126 @@
+<!-- <link rel="stylesheet" href="/editormd/css/editormd.css" />
+
+<div style="width: 1200px;height:500px">
+    <div id="markdown-editor">
+        <textarea style="display:none;"></textarea>
+    </div>
+    
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="/editormd/editormd.min.js"></script>
+<script type="text/javascript">
+    $(() => {
+        editormd.loadScript('/editormd/languages/en', () => {
+            window.md = editormd('markdown-editor', { path: '/editormd/lib/', placeholder: '' });
+            window.md.lang = editormd.defaults.lang;
+            window.md.recreate();
+        });
+    });
+</script> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Gemeente Heerlen</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel='stylesheet' type='text/css' media='screen' href='/dashboard.css'>
+    <script>/** @type {{email: string, flags: number, websites: string[], session: string}} */const user = JSON.parse(atob(`<%- btoa(JSON.stringify({email: user._email, flags: user._flags, websites: user._websites, session: user._sessionToken})); %>`));</script>
+</head>
+<body>
+    <div style="display: flex;align-items: center;justify-content: space-between;">
+        <h1 style="font-size: 2.5rem;margin-left: 1.5rem;">Gemeente Heerlen</h1>
+        <div style="display: flex;gap: 1rem;">
+            <a href="/dashboard/" class="button">gebruiker paneel</a>
+            <% if (user.hasFlags(1<<2)) { //1<<2 = super admin bit %>
+                <a href="/dashboard/sadmin" class="button">web master paneel</a>
+            <% } %>
+            <a href="/dashboard/request" class="button">Test aanvragen</a>
+        </div>
+    </div>
+
+    <div style="display: flex;height: 300px;box-sizing: border-box;padding: 1.5rem;flex: 1;flex-wrap: wrap;justify-content: center;gap: 2.5rem;">
+        <div style="width: 30%;min-width: 400px;height: 100%">
+            <div class="section shadow">
+                <h1>Aanvragen</h1>
+                <div style="display: flex;flex-direction: column;overflow-y: auto;height: 100%;gap:.25rem;">
+                    <% for(const website of websites) { %>
+                        <div style="border-top: gray 1px solid;display: flex;align-items:center;justify-content: space-between;">
+                            <h3><%= website.website %></h3>
+                            <a href="#" onclick="loadRequests('<%= website.website %>')" class="button">selecteer bedrijf</a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div style="flex: 1;min-width: 400px;height: 100%;display: flex;gap: .5rem;">
+            <div class="section" id="content" style="overflow-y: auto;">
+                <!-- <h2 style="color: gray;">Test feedback</h2> -->
+            </div>
+            <div class="section" id="preview" style="overflow-y: auto;display: none;position: relative;">
+                <div id="preview-content"></div>
+                <div onclick="hideReportPreview()" style="position: absolute;top: 0;right: 0;z-index: 100;background-color: whitesmoke;font-size: 20px;cursor: pointer;padding: 0 10px;">
+                    X
+                </div>
+            </div>
+        </div>  
+        
+    </div>
+
+    <script>
+        function loadRequests(siteName) {
+            hideReportPreview();
+            fetch('/requests/' + encodeURIComponent(siteName)).then(x => x.text()).then(x => {
+                document.getElementById('content').innerHTML = x;
+                document.getElementById('content').classList.add('shadow');
+            });
+        }
+
+        function previewReport(reportId) {
+            fetch('/feedback/' + reportId).then(x => x.text()).then(x => {
+                document.getElementById('preview-content').innerHTML = x;
+                document.getElementById('preview').classList.add('shadow');
+                document.getElementById('preview').style.display = 'block';
+            });
+        }
+
+        function hideReportPreview() {
+            document.getElementById('preview').classList.remove('shadow');
+            document.getElementById('preview').style.display = 'none';
+        }
+    </script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+</html>
+
+<style>
+    body {
+        overflow-x: hidden;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+        box-sizing: border-box;
+        padding: 1.5rem;
+    }
+
+    .section {
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 0 1rem;
+    }
+
+    .shadow {
+        filter: drop-shadow(7.5px 7.5px 12.5px #00000050);
+    }
+</style>

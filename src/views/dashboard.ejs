@@ -1,3 +1,18 @@
+<%
+function getStateString(state) {
+    switch(state) {
+        case 0:
+        return 'Ingediend';
+        case 1:
+        return 'In verwerking';
+        case 2:
+        return 'Compleet';
+        default:
+        return '???';
+    }
+}
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,31 +21,42 @@
     <title>Gemeente Heerlen</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel='stylesheet' type='text/css' media='screen' href='dashboard.css'>
-    <script>const user = JSON.parse(atob(`<%- btoa(JSON.stringify({email: user._email, flags: user._flags, websites: user._websites, session: user._sessionToken})); %>`));</script>
+    <link rel='stylesheet' type='text/css' media='screen' href='/dashboard.css'>
+    <script>/** @type {{email: string, flags: number, websites: string[], session: string}} */const user = JSON.parse(atob(`<%- btoa(JSON.stringify({email: user._email, flags: user._flags, websites: user._websites, session: user._sessionToken})); %>`));</script>
 </head>
 <body>
     <div style="display: flex;align-items: center;justify-content: space-between;">
         <h1 style="font-size: 2.5rem;margin-left: 1.5rem;">Gemeente Heerlen</h1>
         <div style="display: flex;gap: 1rem;">
-            <% if (user.hasFlags(1<<1)) { //1<<2 = admin bit %>
-                <a href="/dashboard/admin" class="button">admin paneel</a>
+            <% if (user.hasFlags(1<<1)) { //1<<1 = admin bit %>
+                <a href="/dashboard/admin" class="button">tester paneel</a>
             <% } %>
             <% if (user.hasFlags(1<<2)) { //1<<2 = super admin bit %>
-                <a href="/dashboard/sadmin" class="button">super admin paneel</a>
+                <a href="/dashboard/sadmin" class="button">web master paneel</a>
             <% } %>
+            <a href="/dashboard/request" class="button">Test aanvragen</a>
         </div>
     </div>
 
     <div style="display: flex;height: 300px;box-sizing: border-box;padding: 1.5rem;flex: 1;flex-wrap: wrap;justify-content: center;gap: 2.5rem;">
-        <div style="width: 30%;min-width: 400px;">
-            <div class="section">
-                <h1>Aanvragen</h1>
+        <div style="width: 30%;min-width: 400px;height: 100%">
+            <div class="section shadow">
+                <h1>Tests</h1>
+                <div style="display: flex;flex-direction: column;overflow-y: auto;height: 100%;gap:.25rem;">
+                    <%
+                    let n = 0;
+                    for(const test of tests) { %>
+                        <div style="border-top: gray 1px solid;display: flex;align-items:center;justify-content: space-between;">
+                            <h3>Test <%= n++ + 1 %></h3>
+                            <a href="#" onclick="loadTest('<%- test.id %>')" class="button"><%= getStateString(test.flags) %></a>
+                        </div>
+                    <% } %>
+                </div>
             </div>
         </div>
-        <div style="flex: 1;min-width: 400px;">
-            <div class="section">
-                
+        <div style="flex: 1;min-width: 400px;height: 100%;">
+            <div class="section" id="content" style="overflow-y: auto;">
+                <!-- <h2 style="color: gray;">Test feedback</h2> -->
             </div>
         </div>
         
@@ -39,15 +65,19 @@
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
-        (() => {
-            Toastify({ text: `Welkom terug, ${user.email}`, duration: 3000 }).showToast();
-        })();
+        function loadTest(id) {
+            fetch('/feedback/' + id).then(x => x.text()).then(x => {
+                document.getElementById('content').innerHTML = x;
+                document.getElementById('content').classList.add('shadow');
+            });
+        }
     </script>
 </body>
 </html>
 
 <style>
     body {
+        overflow-x: hidden;
         display: flex;
         justify-content: center;
         flex-direction: column;
@@ -59,13 +89,16 @@
     }
 
     .section {
-        filter: drop-shadow(7.5px 7.5px 10px #00000050);
         width: 100%;
         height: 100%;
         background-color: white;
         border-radius: 15px;
         overflow: hidden;
         box-sizing: border-box;
-        padding: 0 1.5rem;
+        padding: 0 1rem;
+    }
+
+    .shadow {
+        filter: drop-shadow(7.5px 7.5px 12.5px #00000050);
     }
 </style>
