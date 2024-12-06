@@ -1,7 +1,6 @@
 <script lang="ts">
     import { ArtifactType, type IArtifact } from './lib/interfaces';
     import SvelteMarkdown from 'svelte-markdown';
-    import { Carta, MarkdownEditor } from 'carta-md';
 
     let artifacts: IArtifact[] = [
         {
@@ -30,7 +29,7 @@
 
     let draggingIndex: number | undefined;
     let draggingPosition: number | undefined;
-    let redrawSignal = false;
+    let redrawArtifactsListSignal = false;
 
     function getSeperatorIndex() : number {
         if(draggingIndex === undefined || draggingPosition  === undefined || elems.length === 0)
@@ -75,7 +74,7 @@
         artifacts = newOrder;
         draggingIndex = undefined;
 
-        redrawSignal = !redrawSignal;
+        redrawArtifactsListSignal = !redrawArtifactsListSignal;
     }
 
     function mouseDown(event: MouseEvent) {
@@ -124,12 +123,15 @@
         return target;
     }
 
-    // let value = '';
-    // const carta = new Carta();
+    function deleteArtifact(artifact: IArtifact) {
+        artifacts = artifacts.filter(x => x !== artifact);
+    }
 </script>
 
-<div style="padding: 100px;">
-    {#key redrawSignal}
+<button on:click={_ => console.log(JSON.stringify(artifacts, null, 4))}>serialize to console</button>
+
+<div style="padding: 2.5rem;">
+    {#key redrawArtifactsListSignal}
         <div class="artifact-list">
             {#each artifacts as artifact, n }
                 {#if elems[n] && n === getSeperatorIndex() && draggingIndex !== undefined }
@@ -137,17 +139,21 @@
                 {/if}
 
                 <div bind:this={elems[n]} class="artifact" style="{(n === draggingIndex ? 'position:absolute;top:' + draggingPosition + 'px' : '')};user-select:{draggingIndex === undefined ? 'auto' : 'none'}">
-                    <div class="artifact-mover-container">
-                        <div on:mousedown={mouseDown} artifact-index={n} class="artifact-mover">
-                            <img style="height:32px;user-select:none" artifact-index={n} draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABjUlEQVR4nO3dUUvbUBjH4b8T/YQbiGyw45VffChsbmOwyzZSSLCIWkXNe0yeBw6UttBwfi1p04s3+fjOk/xM8iPJWfXBrF1LskkyjGub5LL6oNaq3YshSocxBp+U+V08EGPzyH275zLzJ2M7njeeeoyZY0xEmUl7wbtflI5iTER5J+0V5wVROooxEeWNtDf8xiRKRzEmonS4cc3vlJf5euByyHutzfja7PmU5G9BjGn9SXKkyJ3jcVOGovV7fFOw50uSq4IYu9f8rAQAAADwPFXXk4aVLkFSH0GQ1G+8IFlIEAAAAAAAgKWr/sNmWNkSJPURBEn9xguShQQBAAAAAABYuuo/bIaVLUFSH0GQ1G+8IFlIEAAAAIDke9HYo+txmAx7TpP8L7yetBu3ZOTRnpMk/4qDGAp2zzdj8/rTDJbsTzN6tT/NcOL+NOO7+9MMuF9GlGYydD9RmhjzaM/YaDFm1p6IIkaRiweibB65b/dcZtAOXGY5dNJnxihbMfqJshWj3nmSmyS/xtsf2i3rH1c69Aiw3QAAAABJRU5ErkJggg==">
-                        </div>
-                    </div>
-                    <div>
+                    <div class="artifact-content">
                         <h2 on:focusout={titleUnfocus} artifact-index={n} on:keydown={titleEdited} contenteditable="true">{artifact.title}</h2>
                         <SvelteMarkdown source={artifact.content} />
                     </div>
+                    <div class="artifact-options">
+                        <div on:mousedown={mouseDown} artifact-index={n} class="artifact-mover">
+                            <img style="height:24px;user-select:none" artifact-index={n} draggable="false" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAABjUlEQVR4nO3dUUvbUBjH4b8T/YQbiGyw45VffChsbmOwyzZSSLCIWkXNe0yeBw6UttBwfi1p04s3+fjOk/xM8iPJWfXBrF1LskkyjGub5LL6oNaq3YshSocxBp+U+V08EGPzyH275zLzJ2M7njeeeoyZY0xEmUl7wbtflI5iTER5J+0V5wVROooxEeWNtDf8xiRKRzEmonS4cc3vlJf5euByyHutzfja7PmU5G9BjGn9SXKkyJ3jcVOGovV7fFOw50uSq4IYu9f8rAQAAADwPFXXk4aVLkFSH0GQ1G+8IFlIEAAAAAAAgKWr/sNmWNkSJPURBEn9xguShQQBAAAAAABYuuo/bIaVLUFSH0GQ1G+8IFlIEAAAAIDke9HYo+txmAx7TpP8L7yetBu3ZOTRnpMk/4qDGAp2zzdj8/rTDJbsTzN6tT/NcOL+NOO7+9MMuF9GlGYydD9RmhjzaM/YaDFm1p6IIkaRiweibB65b/dcZtAOXGY5dNJnxihbMfqJshWj3nmSmyS/xtsf2i3rH1c69Aiw3QAAAABJRU5ErkJggg==">
+                        </div>
+                        <img on:click={deleteArtifact(artifact)} style="height: 24px;user-select: none;cursor:pointer" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciICB2aWV3Qm94PSIwIDAgNTAgNTAiIHdpZHRoPSI1MHB4IiBoZWlnaHQ9IjUwcHgiPjxwYXRoIGQ9Ik0gNy43MTg3NSA2LjI4MTI1IEwgNi4yODEyNSA3LjcxODc1IEwgMjMuNTYyNSAyNSBMIDYuMjgxMjUgNDIuMjgxMjUgTCA3LjcxODc1IDQzLjcxODc1IEwgMjUgMjYuNDM3NSBMIDQyLjI4MTI1IDQzLjcxODc1IEwgNDMuNzE4NzUgNDIuMjgxMjUgTCAyNi40Mzc1IDI1IEwgNDMuNzE4NzUgNy43MTg3NSBMIDQyLjI4MTI1IDYuMjgxMjUgTCAyNSAyMy41NjI1IFoiLz48L3N2Zz4="/>
+                    </div>
                 </div>
             {/each}
+            <div on:click={() => artifacts = [...artifacts, { content: 'uw content', title: 'uw titel', type: 0 }]} class="add-artifact">
+                <h2>+ Voeg nieuw artifact toe</h2>
+            </div>
         </div>
     {/key}
 </div>

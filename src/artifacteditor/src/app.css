@@ -18,11 +18,33 @@ body {
 }
 
 .artifact {
-    border: 2px dotted black;
-    padding: 1rem .5rem;
+    border: 1.5px dashed black;
     position: relative;
     box-sizing: border-box;
     width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.artifact-options {
+    opacity: 0;
+    transition: opacity .05s ease-in-out;
+    display: flex;
+    gap: 2.5px;
+    flex-direction: column;
+    border-left: 1px solid black;
+    padding: 1px;
+    box-sizing: border-box;
+}
+
+.artifact-content {
+    flex:1;
+    padding: .5rem 1rem;
+}
+
+.artifact-options:hover {
+    opacity: 1;
 }
 
 .invisible {
@@ -40,10 +62,25 @@ body {
     top: 0;
     right: 0;
     opacity: 0;
-    transition: opacity .05s ease-in-out;
+    transition: opacity .1s ease-in-out;
     box-sizing: border-box;
 }
 
 .artifact-mover-container:hover {
+    opacity: 1;
+}
+
+.add-artifact {
+    border: 1.5px dashed black;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    opacity: .1;
+    user-select: none;
+    cursor: pointer;
+    transition: opacity .1s ease-in-out;
+}
+
+.add-artifact:hover {
     opacity: 1;
 }
