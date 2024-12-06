@@ -19,6 +19,7 @@
     "vite": "^6.0.1"
   },
   "dependencies": {
+    "carta-md": "^4.6.7",
     "svelte-markdown": "^0.4.1",
     "vite-plugin-singlefile": "^2.0.3"
   }
