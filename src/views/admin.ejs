@@ -45,7 +45,7 @@
     <div style="display: flex;height: 300px;box-sizing: border-box;padding: 1.5rem;flex: 1;flex-wrap: wrap;justify-content: center;gap: 2.5rem;">
         <div style="width: 30%;min-width: 400px;height: 100%">
             <div class="section shadow">
-                <h1>Aanvragen</h1>
+                <h1>Aanvragingen</h1>
                 <div style="display: flex;flex-direction: column;overflow-y: auto;height: 100%;gap:.25rem;">
                     <% for(const website of websites) { %>
                         <div style="border-top: gray 1px solid;display: flex;align-items:center;justify-content: space-between;">
@@ -60,8 +60,9 @@
             <div class="section" id="content" style="overflow-y: auto;">
                 <!-- <h2 style="color: gray;">Test feedback</h2> -->
             </div>
-            <div class="section" id="preview" style="overflow-y: auto;display: none;position: relative;">
-                <div id="preview-content"></div>
+            <div class="section" id="preview" style="overflow-y: hidden;display: none;position: relative;">
+                <!-- <div id="preview-content"></div> -->
+                 <iframe height="100%" width="100%" id="preview-content"></iframe>
                 <div onclick="hideReportPreview()" style="position: absolute;top: 0;right: 0;z-index: 100;background-color: whitesmoke;font-size: 20px;cursor: pointer;padding: 0 10px;">
                     X
                 </div>
@@ -80,11 +81,19 @@
         }
 
         function previewReport(reportId) {
-            fetch('/feedback/' + reportId).then(x => x.text()).then(x => {
-                document.getElementById('preview-content').innerHTML = x;
-                document.getElementById('preview').classList.add('shadow');
-                document.getElementById('preview').style.display = 'block';
-            });
+            // fetch('/feedback/' + reportId).then(x => x.text()).then(x => {
+            //     document.getElementById('preview-content').innerHTML = x;
+            //     document.getElementById('preview').classList.add('shadow');
+            //     document.getElementById('preview').style.display = 'block';
+            // });
+            // fetch('/editor.html?report=' + reportId).then(x => x.text()).then(x => {
+            //     document.getElementById('preview-content').innerHTML = x;
+            //     document.getElementById('preview').classList.add('shadow');
+            //     document.getElementById('preview').style.display = 'block';
+            // });
+            document.getElementById('preview-content').src = '/editor.html?report=' + reportId;
+            document.getElementById('preview').classList.add('shadow');
+            document.getElementById('preview').style.display = 'block';
         }
 
         function hideReportPreview() {

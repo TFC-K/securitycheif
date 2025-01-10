@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Blog editor</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/dashboard.css'>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</head>
+<body style="display: flex;flex-direction: column;width: 100vw;height: 100vh;">
+    <div style="display: flex;flex-direction: row;padding: 10px;align-items: center;justify-content: space-between;">
+        <h2 style="line-height: 0px;">Blog editor</h2>
+        <a href="/dashboard/sadmin/" class="button">ga terug</a>
+    </div>
+    <main style="display: flex;flex: 1;gap: .5rem;">
+        <div style="flex:1;padding: 10px 1.5rem;display: flex;flex-direction: column;gap:16px">
+            <div style="font-weight: 600;">
+                <label>Blog post titel</label>
+                <input id="blog-title" style="margin-top: 4px;" type="text" value="<%= blog.title %>" placeholder="Blog post titel">
+            </div>
+            <div style="font-weight: 600;">
+                <label>Auteur</label>
+                <input id="blog-author" style="margin-top: 4px;" type="text" value="<%= blog.author %>" placeholder="Blog post titel">
+            </div>
+
+            <textarea id="blog-content" style="flex: 1;"><%= blog.content %></textarea>
+        </div>
+        <div style="max-width:400px;width: 35%;display: flex;flex-direction: column;padding: 10px;box-sizing: border-box;">
+            <div class="section">
+                <span style="border-bottom: 1px solid lightgrey;width: 100%;display: block;padding: 10px;font-weight: 600;box-sizing: border-box;">
+                    Publicatie
+                </span>
+                <div style="padding: 10px;display: flex;flex-direction: column;gap:10px">
+                    <div style="display: flex;justify-content: space-between;align-items: center;;flex-wrap: wrap;gap: 8px;">
+                        <button onclick="updatePostAsync()" class="button-sm">Update blog post</button>
+                        <button onclick="confirmDelete()" class="button-sm" style="background-color: orange;">Verwijder post</button>
+                    </div>
+                    <div style="display: flex;align-items:center;justify-content: space-between;box-sizing: border-box;">
+                        <label style="font-weight: 600;">Gepubliceerd</label>
+                        <input id="blog-published" type="checkbox" <%- (blog.flags & 1<<0) === 1<<0 ? 'checked' : '' %>>
+                    </div>
+                    <div style="display: flex;align-items:center;justify-content: space-between;box-sizing: border-box;">
+                        <label style="font-weight: 600;">Thumbnail</label>
+                        <input id="thumbnail" type="file" style="color:transparent; width:70px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
+<script>
+    async function updatePostAsync() {
+        const res = await fetch('/api/blogs/<%- blog.id %>', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                author: document.getElementById('blog-author').value,
+                title: document.getElementById('blog-title').value,
+                content: document.getElementById('blog-content').value,
+                published: document.getElementById('blog-published').checked
+            })
+        });
+        if(res.ok)
+            return Toastify({ text: 'Blog post is geüpdate.' }).showToast();
+        else return Toastify({ text: (await res.json()).error }).showToast();
+    }
+
+    const thumbnailUpload = document.getElementById('thumbnail');
+
+    thumbnailUpload.addEventListener('change', async () => {
+        if(thumbnailUpload.files.length === 0)
+            return;
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const r = await fetch('/api/blogs/<%- blog.id %>/thumbnail', {
+                method: 'PUT',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({image: reader.result})
+            });
+            if(r.ok)
+                return Toastify({ text: 'thumbnail is geüpdate.' }).showToast();
+            Toastify({ text: (await r.text()) }).showToast();
+        };
+        reader.readAsDataURL(thumbnailUpload.files[0]);
+    });
+
+    function confirmDelete() {
+        if(!confirm('Weet je zeker dat je deze post wilt verwijderen?'))
+            return;
+        fetch('/api/blogs/<%- blog.id %>', { method: 'DELETE' }).then(_ => location.href = '/dashboard/sadmin');
+    }
+</script>
+
+<style>
+    body {
+        margin: 0;
+        background-color: #f1f1f1;
+    }
+
+    input[type="text"] {
+        background-color: #ffffff;
+        font-weight: 500;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        font-size: 17.5px;
+        padding: 10px 10px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        background-color: #ffffff;
+        font-weight: 500;
+        border: 1px solid lightgrey;
+        border-radius: 5px;
+        padding: 10px 10px;
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        resize: none;
+    }
+
+    .section {
+        border: 1px solid lightgrey;
+        background-color: white;
+        /* filter: drop-shadow(7.5px 7.5px 12.5px #00000050); */
+    }
+</style>

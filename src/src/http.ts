@@ -4,7 +4,10 @@ import cookieParser from 'cookie-parser';
 import apiRouter from './routers/apiRouter';
 import renderRouter from './routers/renderRouter';
 
+import cors from 'cors';
+
 const app = express();
+app.use(cors());
 
 app.set('view engine', 'ejs');
 app.use(express.static('./static'));

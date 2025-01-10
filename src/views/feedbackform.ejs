@@ -1,3 +1,4 @@
+<% if(test.flags === 2) { %>
 <h2>Test rapport voor <%- test.website %></h2>
 
 <div class="artifacts">
@@ -21,6 +22,9 @@
         </div>
     <% } %>
 </div>
+<% } else { %>
+    <h2>Uw test is nog niet compleet.</h2>
+<% } %>
 
 
 <style>

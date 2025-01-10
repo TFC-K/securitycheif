@@ -25,3 +25,9 @@ export interface IArtifact {
     title: string;
     content: any;
 };
+
+export enum BlogFlags {
+    None = 0,
+    Published = 1<<0,
+    
+}

@@ -25,6 +25,23 @@ h6 {
     text-align: center;
 }
 
-.button:hover {
+.button:hover{
     filter: brightness(1.15);
+}
+
+.button-sm:hover {
+    filter: brightness(1.15);
+}
+
+.button-sm {
+    background-color: #0b7c7b;
+    border: none;
+    border-radius: 5px;
+    padding: .3rem .75rem;
+    font-size: 15px;
+    cursor: pointer;
+    transition: filter .1s ease-in-out;
+    text-decoration: none;
+    color: white;
+    text-align: center;
 }

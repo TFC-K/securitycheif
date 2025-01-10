@@ -1,7 +1,7 @@
 import express from 'express';
 import database from '../database';
 import User from '../interfaces/user';
-import { UserFlags } from '../interfaces/interfaces';
+import { BlogFlags, UserFlags } from '../interfaces/interfaces';
 import markdownit from 'markdown-it';
 import Test from '../interfaces/test';
 
@@ -27,7 +27,7 @@ router.get('/login', (req, res) => {
 
 router.get('/', (req, res) => {
     res.render('index.ejs', {
-        blogs: database.db.prepare('SELECT * FROM blog').all()
+        blogs: database.db.prepare(`SELECT * FROM blog WHERE flags & ${BlogFlags.Published} == ${BlogFlags.Published}`).all()
     });
 });
 
@@ -75,11 +75,12 @@ router.get('/dashboard/sadmin', (req, res) => {
         return res.clearCookie('session').redirect('/login');
     if(!user.hasFlags(UserFlags.SuperAdministrator))
         return res.redirect('/dashboard');
-    res.render('sadmin.ejs', { user });
+    const blogs = database.db.prepare(`SELECT * FROM blog`).all();
+    res.render('sadmin.ejs', { user, blogs });
 });
 
 router.get('/blog/:blogId', (req, res) : any => {
-    const blog: any = database.db.prepare('SELECT * FROM blog WHERE id=?').get(req.params.blogId);
+    const blog: any = database.db.prepare(`SELECT * FROM blog WHERE id=? AND flags & ${BlogFlags.Published} == ${BlogFlags.Published}`).get(req.params.blogId);
     if(!blog)
         return res.status(404).send('404: blog not found, <a href="/">go back</a>');
     res.render('blog.ejs', { md: md.render(blog.content), blog: blog })
@@ -125,6 +126,18 @@ router.get('/dashboard/admin/edit/:reportId', (req, res) : any => {
         return res.status(404).json({ error: 'not found' });
 
     return res.render('reportedit.ejs', { });
+});
+
+router.get('/dashboard/sadmin/edit/:blogId', (req, res) : any => {
+    const user = User.getUserByToken(req.cookies.session);
+    if(!user)
+        return res.clearCookie('session').redirect('/login');
+    if(!user.hasFlags(UserFlags.SuperAdministrator))
+        return res.redirect('/dashboard');
+    const blog: any = database.db.prepare('SELECT * FROM blog WHERE id=?').get(req.params.blogId);
+    if(!blog)
+        return res.status(404).send('404: blog not found, <a href="/">go back</a>');
+    res.render('blogeditor.ejs', { user, blog });
 });
 
 export default router;
